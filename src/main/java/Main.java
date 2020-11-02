@@ -7,7 +7,7 @@ public class Main {
         final int ARRAY_SIZE = 10_000_000;
         final int WRITERS_COUNT = 4;
         final int READERS_COUNT = 4;
-        int[][] arrays = new int [WRITERS_COUNT][];// = generateArray(ARRAY_SIZE, MAX_VALUE);
+        int[][] arrays = new int [WRITERS_COUNT][];
         Map<Integer, Integer> concurrentHashMap = new ConcurrentHashMap<>();
         Map<Integer, Integer> synchronizedMap = Collections.synchronizedMap(new HashMap<>());
         Writer[] writers = new Writer[WRITERS_COUNT];
