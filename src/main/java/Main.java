@@ -7,22 +7,23 @@ public class Main {
         final int ARRAY_SIZE = 10_000_000;
         final int WRITERS_COUNT = 4;
         final int READERS_COUNT = 4;
-        int[] array = generateArray(ARRAY_SIZE, MAX_VALUE);
+        int[][] arrays = new int [WRITERS_COUNT][];// = generateArray(ARRAY_SIZE, MAX_VALUE);
         Map<Integer, Integer> concurrentHashMap = new ConcurrentHashMap<>();
         Map<Integer, Integer> synchronizedMap = Collections.synchronizedMap(new HashMap<>());
         Writer[] writers = new Writer[WRITERS_COUNT];
         Reader[] readers = new Reader[READERS_COUNT];
 
+        for (int i = 0; i < WRITERS_COUNT; i++) {
+            arrays[i] = generateArray(ARRAY_SIZE, MAX_VALUE);
+        }
         System.out.println("Старт записи/чтения в ConcurrentHashMap");
         long startTime= System.currentTimeMillis();
         for (int i = 0; i < WRITERS_COUNT; i++) {
-            writers[i] = new Writer(concurrentHashMap, array, i * array.length / 4,
-                    (i+1) * array.length / 4);
+            writers[i] = new Writer(concurrentHashMap, arrays[i]);
             writers[i].start();
         }
         for (int i = 0; i < READERS_COUNT; i++) {
-            readers[i] = new Reader(concurrentHashMap, array, i * array.length / 4,
-                    (i+1) * array.length / 4);
+            readers[i] = new Reader(concurrentHashMap, arrays[i]);
             readers[i].start();
         }
         for (Writer writer : writers) {
@@ -37,13 +38,11 @@ public class Main {
         System.out.println("Старт записи/чтения в SynchronizedMap");
         startTime= System.currentTimeMillis();
         for (int i = 0; i < WRITERS_COUNT; i++) {
-            writers[i] = new Writer(synchronizedMap, array, i * array.length / 4,
-                    (i+1) * array.length / 4);
+            writers[i] = new Writer(synchronizedMap, arrays[i]);
             writers[i].start();
         }
         for (int i = 0; i < READERS_COUNT; i++) {
-            readers[i] = new Reader(synchronizedMap, array, i * array.length / 4,
-                    (i+1) * array.length / 4);
+            readers[i] = new Reader(synchronizedMap, arrays[i]);
             readers[i].start();
         }
         for (Writer writer : writers) {
